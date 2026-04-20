@@ -7,14 +7,7 @@ const app = express();
 
 const allowedOrigins = (process.env.ALLOWED_ORIGIN || '').split(',').map(o => o.trim());
 
-app.use(cors({
-  origin: function (origin, callback) {
-    // Allow requests with no origin (e.g. Postman, curl)
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin)) return callback(null, true);
-    callback(new Error('Not allowed by CORS'));
-  }
-}));
+app.use(cors());
 app.use(express.json());
 
 const transporter = nodemailer.createTransport({
