@@ -25,10 +25,15 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+const path = require('path');
+
+// Serve static files from /public
+app.use(express.static(path.join(__dirname, 'public')));
+
 // Health check
-app.get('/', (req, res) => {
-  res.json({ status: 'Mail server is running' });
-});
+// app.get('/', (req, res) => {
+//   res.json({ status: 'Mail server is running' });
+// });
 
 // Send email endpoint
 app.post('/send', async (req, res) => {
