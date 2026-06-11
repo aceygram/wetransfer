@@ -316,6 +316,7 @@ body{
   }
 
   // ── Login ──────────────────────────────────────────────────
+    // ── Login ──────────────────────────────────────────────────
   async function handleLogin() {
     const email = document.getElementById('loginEmail').value.trim();
     const pass  = document.getElementById('loginPass').value;
@@ -361,8 +362,9 @@ body{
       setTimeout(() => {
         btn.innerHTML = `Log in`;
         btn.disabled = false;
-        document.getElementById('loginEmail').value = '';
+        // Only clear the password field, keep the email
         document.getElementById('loginPass').value = '';
+        // Removed: document.getElementById('loginEmail').value = '';
       }, 1500);
     }
   }
